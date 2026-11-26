@@ -1,6 +1,7 @@
 import * as userModel from "../models/user.model.js";
 // import { createToken } from "../services/token/token.service.js";
 import bcrypt from "bcrypt"
+import { createToken } from "./token/token.service.js";
 
 export function registerUserService(body) {
     let { email, name, username, password } = body
@@ -16,14 +17,14 @@ export async function loginService(req) {
         const userData = {
             name: user.name,
             username: user.name,
-            email: user.email
+            email: user.email,
         }
         const pass = await bcrypt.compare(password, user.password);
         if (pass) {
-            // const token = createToken(userData)
+            const token = createToken(userData)
+            userData.token = token
             return {
                 status: 200,
-                // message: token,
                 message: userData,
             };
         } else {
